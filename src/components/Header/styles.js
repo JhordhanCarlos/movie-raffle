@@ -46,10 +46,11 @@ export const Content = styled.div`
         margin: 1rem;
         display: flex;
         flex-wrap: nowrap;
+        width: max-content;
         max-width: 100%;
     }
 
-td {
+    td {
             padding: 1rem 2rem;
             border: 0;
             display: flex;

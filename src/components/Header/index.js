@@ -3,14 +3,14 @@ import { Container, Content } from './styles';
 import axios from 'axios';
 import { FiFilm, FiPlus } from "react-icons/fi";
 import { HiOutlineSearch } from "react-icons/hi";
+import { useRaffle } from '../../hooks/useRaffle';
 
 export function Header () {
+    const {addToQueue, setMovieTitle} = useRaffle();
+
     const [searchText, setSearchText] = useState("");
     const [dados, setDados] = useState([]);
 
-    function addToQueue (id) {
-        console.log(id)
-    }
     const getSearch = async () =>{
         
         if(searchText.trim() !== ""){
@@ -19,6 +19,7 @@ export function Header () {
             let {data} = await axios.get(url)
             let [...Search] = data.Search
             setDados(Search)
+            console.log(dados)
         } 
       }
 
@@ -36,12 +37,12 @@ export function Header () {
                 <div>
                     {
                         dados.map((dado) => 
-                            <tr key={dado.imdbId}>
+                            <tr key={dado.imdbID}>
                                 <td><img src={dado.Poster} alt=""/></td>
                                 <td><h2>{dado.Title}</h2></td>
                                 <td><label>{dado.Year}</label></td>
                                 <td><label>{dado.Type}</label></td>
-                                <td><button onClick={addToQueue(dado.imdbId)}><FiPlus size={24} /></button></td>
+                                <td><button onClick={() => (addToQueue([{"id" : dado.imdbID, "title" : dado.Title}]), setMovieTitle(dado.Title))}><FiPlus size={24} /></button></td>
                             </tr>
                         )
                     }  

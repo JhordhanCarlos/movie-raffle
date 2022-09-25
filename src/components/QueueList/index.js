@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import {Container} from './styles';
-import { FiChevronDown, FiChevronUp, FiCheck, FiEdit2 } from "react-icons/fi";
+import { FiChevronDown, FiChevronUp, FiCheck, FiEdit2, FiTrash } from "react-icons/fi";
+import { useRaffle } from "../../hooks/useRaffle";
 
 
 export function QueueList () {
+    const {queue, maxMovies, setMaxMovies, removeFromQueue, movieTitle} = useRaffle()
+
     const [isMinimized, setIsMinimized] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
-    const [maxMovies, setMaxMovies] = useState(0);
     
-
+console.log(queue)
     function handleMaxMovies(){
         setIsEditing(false)
     }
@@ -23,21 +25,21 @@ export function QueueList () {
 
     return(
         <Container className={isMinimized ? "queueMinimized" : "queueNotMinimized"}>
-            <div>
+            <header>
                 <h3>Queue</h3>
                 {
                     isEditing ? (
                         <>
                         <input type="number" placeholder={`Max: ${maxMovies}`} onBlur={(e) => setMaxMovies(e.target.value)}/>
                         <button onClick={handleMaxMovies}>
-                            <FiCheck size={24}/> 
+                            <FiCheck size={20}/> 
                         </button>
                         </>
                     ) : (
                         <>
-                        <label>00/{maxMovies}</label>
+                        <label>{queue.length}/{maxMovies}</label>
                         <button onClick={handleEdit}>
-                            <FiEdit2 size={24}/> 
+                            <FiEdit2 size={20}/> 
                         </button>
                         </>
                     )
@@ -47,14 +49,36 @@ export function QueueList () {
                     isMinimized 
                     ? 
                     <button onClick={handleMinimize}>
-                        <FiChevronUp size={24}/> 
+                        <FiChevronUp size={20}/> 
                     </button>
                     : 
                     <button onClick={handleMinimize}>
-                        <FiChevronDown size={24}/>
+                        <FiChevronDown size={20}/>
                     </button>
                 }
+            </header>
+            <div className="contentContainer">
+            {
+                queue.length === 0 ?
+                (<label>
+                    The queue is empty                    
+                </label> )
+                :
+               ( queue.map((movie) => (
+                    <div key={movie[0].id}>
+                        <label>
+                            {movie[0].title}
+                        </label>
+                        <button onClick={() => removeFromQueue(movie[0].id)}>
+                            <FiTrash size={20}/>
+                        </button>
+                    </div>
+                )))
+            }
             </div>
+            <button className="raffleButton">
+                Raffle
+            </button>
         </Container>
     )
 }
